@@ -494,8 +494,8 @@ if(syncConfig.auto&&syncConfig.url){checkRemote();}
   const newData={...DATA,games,record:{w:finals.filter(g=>g.result==='W').length,l:finals.filter(g=>g.result==='L').length}};
   if(pending.seasonWeek>DATA.nextWeek){
    newData.nextWeek=pending.seasonWeek;
-   newData.nextOpponent='TBD';
-  } else if(games.find(g=>g.status==='final'&&g.week===DATA.nextWeek&&g.opponent===DATA.nextOpponent))newData.nextOpponent='TBD';
+   newData.nextOpponent='Bye Week — Conference Championship Games Ahead';
+  } else if(games.find(g=>g.status==='final'&&g.week===DATA.nextWeek&&g.opponent===DATA.nextOpponent))newData.nextOpponent='Bye Week — Conference Championship Games Ahead';
   const update={
    schema:'howard-dynasty-hq-update-v1',
    updateId:'browser-save-week'+pending.seasonWeek+'-'+pending.found.map(x=>x.week+'-'+x.scored+'-'+x.allowed).join('_'),
