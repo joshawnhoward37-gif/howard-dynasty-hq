@@ -25,3 +25,7 @@ For a new week, include `week` equal to the newly active week. For a postgame up
 **Persistence:** `localStorage` is browser- and origin-specific. Don't switch between a file:// copy and GitHub Pages expecting decisions to migrate automatically. Export your progress from the app before switching and import it on the hosted app. Use the app's Save & Export controls for backups.
 
 **Hosting:** The pages site is public if the repository is public. No server is required; updates are static JSON published through GitHub.
+
+## GitHub Pages deployment
+
+Publish from **Settings → Pages → Build and deployment → Deploy from a branch → main → /(root)**. The app entrypoint is the top-level `index.html`; data updates are served from `latest-update.json`. The live path is `/howard-dynasty-hq/`.
