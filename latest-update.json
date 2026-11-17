@@ -1,0 +1,24 @@
+{
+  "schema": "howard-dynasty-hq-update-v1",
+  "updateId": "initial-w13-static-snapshot-2027",
+  "stage": "correction",
+  "week": 13,
+  "headlines": [
+    [
+      "Ohio State leads the CFP field",
+      "The Week 13 save snapshot ranks Ohio State first at 11–0."
+    ],
+    [
+      "Louisville ranked seventh in CFP",
+      "The decoded Week 13 save lists Louisville at #7 in the playoff rankings with a 10–1 record."
+    ],
+    [
+      "Kentucky rivalry is next",
+      "The save lists Kentucky as Louisville’s next opponent. Its game result has not been imported yet."
+    ],
+    [
+      "Heisman race",
+      "LaNorris Sellers leads the four populated candidates recovered from the save."
+    ]
+  ]
+}
