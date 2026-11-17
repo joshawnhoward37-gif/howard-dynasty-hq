@@ -1,8 +1,8 @@
 {
   "schema": "howard-dynasty-hq-update-v1",
-  "updateId": "louisville-kentucky-w13-2027-postgame-30-27-v1",
-  "stage": "postgame",
-  "week": 13,
+  "updateId": "louisville-week14-2027-advance-snapshot-v1",
+  "stage": "week-advance",
+  "week": 14,
   "data": {
     "season": 2027,
     "team": "Louisville",
@@ -10,8 +10,8 @@
       "w": 11,
       "l": 1
     },
-    "nextOpponent": "",
-    "nextWeek": 13,
+    "nextOpponent": "TBD",
+    "nextWeek": 14,
     "rosterCount": 65,
     "players": [
       {
@@ -1421,9 +1421,9 @@
     "notes": [
       "Original save was not modified.",
       "The schedule and roster are extracted from the uploaded EA CFB 27 autosave.",
-      "Current team ranking, player season statistics, recent injuries and exact depth chart are not verified.",
       "Other future placeholders exist in the database and were excluded from completed results.",
-      "Week 13 Kentucky final verified: Louisville 30, Kentucky 27. Scoring chronology and individual performances remain under verification."
+      "Week 13 Kentucky final verified: Louisville 30, Kentucky 27. Scoring chronology and individual performances remain under verification.",
+      "SeasonInfo confirms the dynasty advanced from Week 13 to Week 14 after Louisville's 30–27 rivalry win. The next opponent is not confirmed."
     ]
   },
   "stories": [
@@ -1679,18 +1679,22 @@
   },
   "headlines": [
     [
-      "Louisville survives Kentucky 30–27",
-      "Joshawn Howard's Cardinals improve to 11–1 with a three-point victory in the in-state rivalry."
+      "Week 14 begins — Louisville 11–1",
+      "The newly uploaded dynasty save confirms Week 14. Louisville has finished its regular-season schedule with an 11–1 record."
     ],
     [
-      "Four straight Louisville victories",
-      "Since losing to North Carolina in Week 9, Louisville has beaten Stanford, California, Boston College, and Kentucky."
+      "Howard's team closes the regular season with four straight wins",
+      "After the Week 9 loss to North Carolina, the Cardinals beat Stanford, California, Boston College, and Kentucky."
     ],
     [
-      "National picture awaits advancement",
-      "The previously decoded Louisville ranking was #7 in the CFP. Updated polls, awards and other games require the week-advance save."
+      "Playoff positioning: further national data decoding",
+      "Louisville was previously #7 in the published CFP snapshot. Week 14 national polls and postseason matchups are still being decoded; outdated tables remain labeled as the earlier snapshot."
+    ],
+    [
+      "The next chapter",
+      "Coach Howard and his staff turn their attention to the postseason picture. The next opponent has not been verified."
     ]
   ],
-  "pressLabel": "Week 13 Final • Louisville 30, Kentucky 27",
-  "pressIntro": "Three postgame questions follow the verified 30–27 Louisville win over Kentucky. Reporters and responses are fictional; the exact scoring sequence has not yet been established. Choose A/B/C, type your own answer, or combine them."
+  "pressLabel": "Week 13 final • Louisville 30, Kentucky 27",
+  "pressIntro": "Postgame questions for the Kentucky win remain available in your archived Week 13 story history. The dynasty has now advanced to Week 14, and coaching decisions begin for the next phase of the season."
 }
