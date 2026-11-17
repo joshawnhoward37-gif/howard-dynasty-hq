@@ -1,7 +1,7 @@
 {
   "schema": "howard-dynasty-hq-update-v1",
-  "updateId": "louisville-week14-2027-advance-snapshot-v1",
-  "stage": "week-advance",
+  "updateId": "week14-bye-before-conference-championships-2027-correction-v2",
+  "stage": "correction",
   "week": 14,
   "data": {
     "season": 2027,
@@ -10,7 +10,7 @@
       "w": 11,
       "l": 1
     },
-    "nextOpponent": "TBD",
+    "nextOpponent": "Bye Week — Conference Championship Games Ahead",
     "nextWeek": 14,
     "rosterCount": 65,
     "players": [
@@ -1423,7 +1423,7 @@
       "The schedule and roster are extracted from the uploaded EA CFB 27 autosave.",
       "Other future placeholders exist in the database and were excluded from completed results.",
       "Week 13 Kentucky final verified: Louisville 30, Kentucky 27. Scoring chronology and individual performances remain under verification.",
-      "SeasonInfo confirms the dynasty advanced from Week 13 to Week 14 after Louisville's 30–27 rivalry win. The next opponent is not confirmed."
+      "Week 14 is a bye week immediately before conference championship games. No Louisville opponent is scheduled for this week."
     ]
   },
   "stories": [
@@ -1431,12 +1431,12 @@
       "id": "ky",
       "group": "rivalry",
       "source": "save",
-      "tag": "Week 13 • Rivalry Win",
+      "tag": "Week 13 • 30–27 Rivalry Win",
       "title": "Louisville survives Kentucky",
-      "status": "WON 30–27",
+      "status": "WON",
       "summary": "Louisville defeated Kentucky 30–27 in Week 13, improving to 11–1. Howard won his in-state rivalry matchup by three points, continuing the Cardinals' post–North Carolina winning streak.",
       "people": "Joshawn Howard, Nate Sheppard, Dante Moore",
-      "beat": "The exact scoring sequence and individual game leaders require more decoding. The pressure of a tight rivalry game is a new chapter in Howard's career."
+      "beat": "Louisville is now in its Week 14 bye before conference championship games; the Kentucky result stands as the regular-season finale."
     },
     {
       "id": "unc",
@@ -1669,6 +1669,193 @@
           ]
         ]
       }
+    ],
+    "officeScenes": [
+      {
+        "day": "Monday",
+        "title": "Recover and Evaluate",
+        "scene": [
+          [
+            "Howard",
+            "We finished the regular season 11–1. There is no game this week, but there is still work to do."
+          ],
+          [
+            "Pyke",
+            "We can heal up or dig into the film. Both matter going into championship season."
+          ]
+        ],
+        "prompt": "What does Howard prioritize on the first day of the bye?",
+        "options": [
+          [
+            "A",
+            "Recovery first",
+            "Treatment, rest and a light walkthrough."
+          ],
+          [
+            "B",
+            "Film and accountability",
+            "Grade recent close games and identify recurring errors."
+          ],
+          [
+            "C",
+            "Captains' meeting",
+            "Moore, Sheppard, Phares and Waller assess where the team stands."
+          ]
+        ],
+        "responses": {
+          "A": "The training staff gets a clear recovery plan. Veterans appreciate the rest; Howard demands a sharp return.",
+          "B": "Howard and Pyke build an honest correction list. Players see that 11–1 does not excuse mistakes.",
+          "C": "The four leaders take ownership of preparation and morale. Howard listens before setting the week's priorities."
+        }
+      },
+      {
+        "day": "Tuesday",
+        "title": "Study the Field",
+        "scene": [
+          [
+            "Moore",
+            "We don't know the opponent yet, Coach. How do we prepare for the possibilities?"
+          ],
+          [
+            "Howard",
+            "By staying ready without pretending the matchup has already been decided."
+          ]
+        ],
+        "prompt": "How should Tuesday's preparation work?",
+        "options": [
+          [
+            "A",
+            "Scout likely contenders",
+            "Separate film breakdowns for potential conference championship and playoff opponents."
+          ],
+          [
+            "B",
+            "Situational football",
+            "Focus on red zone, two-minute drives and conversion downs regardless of opponent."
+          ],
+          [
+            "C",
+            "Build offensive flexibility",
+            "Practice multiple approaches without committing to a matchup."
+          ]
+        ],
+        "responses": {
+          "A": "The staff divides scouting assignments. The players keep working on their own execution.",
+          "B": "Moore, Sheppard and the defense rehearse pressure situations. Howard owns every live play call.",
+          "C": "Howard installs answers for multiple defensive looks while keeping the offense balanced."
+        }
+      },
+      {
+        "day": "Wednesday",
+        "title": "Protect the Stars",
+        "scene": [
+          [
+            "Sheppard",
+            "Coach, I'm ready to work. Don't hold me out just because it's a bye."
+          ],
+          [
+            "Howard",
+            "We have to balance being ready against being worn down."
+          ]
+        ],
+        "prompt": "How does Howard handle player workload?",
+        "options": [
+          [
+            "A",
+            "Reduce veteran reps",
+            "Keep starters sharp with controlled work and give backups meaningful reps."
+          ],
+          [
+            "B",
+            "Normal competition",
+            "Maintain full-speed competitive practice with managed contact."
+          ],
+          [
+            "C",
+            "Individual plans",
+            "Tailor workloads by position and player, with trainers involved."
+          ]
+        ],
+        "responses": {
+          "A": "Sheppard gets fewer reps but works closely with the younger backs. The depth chart gets attention.",
+          "B": "The veterans appreciate the intensity. Pyke monitors fatigue and Howard reminds everyone to avoid unnecessary contact.",
+          "C": "The staff sets individual practice plans. Moore, Sheppard and the defensive captains each receive clear goals."
+        }
+      },
+      {
+        "day": "Thursday",
+        "title": "Championship Identity",
+        "scene": [
+          [
+            "Pyke",
+            "Our defense will need answers for explosive plays when the stakes rise."
+          ],
+          [
+            "Phares",
+            "Then make us earn every alignment in practice."
+          ],
+          [
+            "Howard",
+            "We build a plan without guessing who we'll face."
+          ]
+        ],
+        "prompt": "What is Thursday's focus?",
+        "options": [
+          [
+            "A",
+            "Defensive discipline",
+            "Four-man pressure, disguised coverages and reliable tackling."
+          ],
+          [
+            "B",
+            "Offensive versatility",
+            "Balance the run and pass with selective shots and installed quarterback checks."
+          ],
+          [
+            "C",
+            "End-of-game execution",
+            "Practice clock management, fourth downs and late-game calls on both sides."
+          ]
+        ],
+        "responses": {
+          "A": "Phares and Waller lead the checks. Pyke prepares the defense while Howard makes every play call.",
+          "B": "Moore and Sheppard work through flexible concepts; Howard retains play-calling control.",
+          "C": "The offense and defense run high-pressure situations. Howard emphasizes decision-making over theatrics."
+        }
+      },
+      {
+        "day": "Friday",
+        "title": "One Message, No Opponent",
+        "scene": [
+          [
+            "Reporter",
+            "Coach Howard, Louisville is 11–1 heading into the conference championship weekend. How do you keep the team focused during the bye?"
+          ]
+        ],
+        "prompt": "What is Howard's Friday media response?",
+        "options": [
+          [
+            "A",
+            "Control our work",
+            "We cannot control the bracket. We can control our preparation."
+          ],
+          [
+            "B",
+            "Embrace the moment",
+            "We've earned a chance to compete for something meaningful, and we intend to be ready."
+          ],
+          [
+            "C",
+            "Stay humble",
+            "Records don't win postseason games. Execution does."
+          ]
+        ],
+        "responses": {
+          "A": "The message around the program centers on preparation, not projection.",
+          "B": "Players hear confidence without a made-up opponent. The media highlights Howard's ambitions.",
+          "C": "Howard's restrained tone reinforces accountability before championship weekend."
+        }
+      }
     ]
   },
   "gameNotes": {
@@ -1679,22 +1866,22 @@
   },
   "headlines": [
     [
-      "Week 14 begins — Louisville 11–1",
-      "The newly uploaded dynasty save confirms Week 14. Louisville has finished its regular-season schedule with an 11–1 record."
+      "Week 14 is a bye week",
+      "Louisville is 11–1 and has no scheduled game in Week 14. This is the open week before conference championship games."
     ],
     [
-      "Howard's team closes the regular season with four straight wins",
-      "After the Week 9 loss to North Carolina, the Cardinals beat Stanford, California, Boston College, and Kentucky."
+      "Howard has time to prepare",
+      "The Cardinals can recover, study championship-week possibilities and prepare for the playoff and conference-title implications without inventing a confirmed opponent."
     ],
     [
-      "Playoff positioning: further national data decoding",
-      "Louisville was previously #7 in the published CFP snapshot. Week 14 national polls and postseason matchups are still being decoded; outdated tables remain labeled as the earlier snapshot."
+      "Four straight wins to finish the regular season",
+      "Following the North Carolina defeat, Louisville beat Stanford, California, Boston College and Kentucky."
     ],
     [
-      "The next chapter",
-      "Coach Howard and his staff turn their attention to the postseason picture. The next opponent has not been verified."
+      "Updated postseason picture still being analyzed",
+      "The save-backed Week 14 rankings are tracked separately from any confirmed conference championship matchup."
     ]
   ],
   "pressLabel": "Week 13 final • Louisville 30, Kentucky 27",
-  "pressIntro": "Postgame questions for the Kentucky win remain available in your archived Week 13 story history. The dynasty has now advanced to Week 14, and coaching decisions begin for the next phase of the season."
+  "pressIntro": "The 30–27 Kentucky rivalry win closed the regular season. Week 14 is a bye before conference championship games. One meaningful decision per day continues, with immediate dialogue and reactions."
 }
