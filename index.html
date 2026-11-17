@@ -43,12 +43,31 @@ main{padding:27px clamp(16px,3vw,42px) 70px;max-width:1530px;width:100%;margin:0
 .save-drop .tiny{margin-top:7px}
 #savePreview{margin:15px 0;white-space:pre-wrap;font-size:13px;line-height:1.6}
 #saveApply{margin:10px 0}
+
+.media-feature{padding:24px;border:1px solid #68364d;border-radius:14px;background:linear-gradient(120deg,#3a1d2d,#171f2e 60%)}
+.media-feature h2{font-size:clamp(23px,3vw,33px);line-height:1.2;margin:10px 0}
+.media-kicker{color:#ff9fad;text-transform:uppercase;font-size:11px;letter-spacing:.1em;font-weight:800}
+.media-archive{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px;margin-top:16px}
+.media-tile{background:#192535;border:1px solid #344257;border-radius:12px;padding:16px;cursor:pointer;text-align:left;color:inherit}
+.media-tile:hover{border-color:#ee7080;background:#242e3e}
+.media-tile h4{margin:9px 0;font-size:17px;line-height:1.3}
+.media-tile p,.media-feature p{font-size:14px;line-height:1.6;color:#cbd7e5}
+.media-tile p{font-size:13px}
+.media-story{border-bottom:1px solid #2b394b;padding:12px 0;line-height:1.6}
+.media-story:last-child{border-bottom:0}
+.media-story strong{display:block;margin-bottom:5px}
+.media-story p{margin:0;color:#b2c2d4;font-size:13px}
+.media-analysis{line-height:1.65}
+.media-analysis h4{font-size:15px;margin:17px 0 5px}
+.media-analysis p{font-size:14px;color:#d5dfeb}
+.media-quote{border-left:3px solid #eb526a;padding:12px;background:#242735;font-size:13px;line-height:1.6}
 </style></head>
 <body><div id="shell"><aside>
 <div class="brand"><div class="crest">L</div><div><h2>DYNASTY HQ <span style="color:var(--red)">4.0</span></h2><div class="caps" style="font-size:9px">Howard Coaching Universe</div></div></div>
 <nav aria-label="App navigation" class="nav" id="nav">
 <button class="active" data-go="home"><span class="ico">⌂</span> Dashboard</button>
 <button data-go="games"><span class="ico">▤</span> Game Center</button>
+<button data-go="media"><span class="ico">📺</span> ESPN Central</button>
 <button data-go="world"><span class="ico">🌎</span> Around CFB</button>
 <button data-go="roster"><span class="ico">♟</span> Roster</button>
 <button data-go="stories"><span class="ico">✧</span> Storylines</button>
@@ -68,6 +87,11 @@ main{padding:27px clamp(16px,3vw,42px) 70px;max-width:1530px;width:100%;margin:0
 <div class="section"><h2>Latest results</h2><div id="recentGames"></div></div>
 </section>
 <section class="page" id="games"><div class="panel"><div class="caps">Save-verified Louisville results</div><h3>Game Center • 2027 Season</h3><p class="muted">Choose a game to review what the score confirms, what can reasonably be inferred, and what still needs a scoring summary or box score. Do not mistake inferences for verified plays.</p><div class="split"><div id="allGames"></div><div id="gameDetail"></div></div></div></section>
+
+<section class="page" id="media"><div class="panel"><div class="caps">FICTIONAL SPORTS BROADCAST • THE HOWARD COACHING UNIVERSE</div><h3 style="font-size:26px">ESPN Central</h3><p class="muted">Full game recaps, debates, national storylines and a season news archive. Scores come from the dynasty save. Analyst commentary is dramatized; specific scoring plays are never invented.</p></div>
+<div id="mediaFeature" style="margin-top:16px"></div>
+<div class="grid two" style="margin-top:17px"><div class="panel"><div class="caps">SPORTSCENTER • NATIONAL DESK</div><h3>Across College Football</h3><div id="mediaNational"></div></div><div class="panel"><div class="caps">COLLEGE GAMEDAY • DEBATE DESK</div><h3>What the Analysts Are Saying</h3><div id="mediaDebates"></div></div></div>
+<div class="panel" style="margin-top:17px"><div class="caps">THE 2027 SEASON • FEATURE STORIES</div><h3>Every Louisville game deserves coverage</h3><div class="media-archive" id="mediaArchive"></div></div></section>
 <section class="page" id="world">
 <div class="nation-top">
 <div class="panel"><div class="caps">Louisville • Media</div><strong id="natMedia">#5</strong><small class="muted">Top 25 poll</small></div>
@@ -144,7 +168,7 @@ function load(){try{let s=JSON.parse(localStorage.getItem(key));if(s&&s.version=
 function persist(){state.updated=new Date().toISOString();try{localStorage.setItem(key,JSON.stringify(state));$('saveIndicator').textContent='✓ Locally saved'}catch(e){$('saveIndicator').textContent='Export to save choices'}}
 function log(kind,text){state.log.unshift({at:new Date().toISOString(),kind,text});state.log=state.log.slice(0,100);persist();renderJournal()}
 let toastTimer;function toast(t){let x=$('toast');x.textContent=t;x.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>x.style.display='none',2600)}
-function go(page){const meta={home:['Dynasty Dashboard','Your games are save facts. Your decisions develop the story.'],games:['ESPN Game Center','Review the scoreboard without inventing missing scoring plays.'],world:['Around College Football','The rest of the nation, grounded in what the save reveals.'],roster:['Louisville Roster','65 decoded player records from your actual autosave.'],stories:['Storyline Tracker','Player rivalries, coaching history and ongoing dramatic arcs.'],office:["Coach's Office",'One meaningful decision each day. No automatic game progression.'],locker:['Locker Room','Build relationships through one-on-one conversations.'],press:['Press Room','Three postgame questions, one at a time.'],drama:['Rivalries & Drama','Shape the story without rewriting save-verified events.'],saves:['Sync Updates','Apply new save data without replacing this app; keep your story choices.']};currentPage=page;document.querySelectorAll('.page').forEach(n=>n.classList.toggle('active',n.id===page));document.querySelectorAll('[data-go]').forEach(n=>n.classList.toggle('active',n.dataset.go===page));$('pageTitle').textContent=meta[page][0];$('pageSub').textContent=meta[page][1];if(page==='office')renderOffice();if(page==='locker')renderLocker();if(page==='press')renderPress();if(page==='drama')renderDrama();if(page==='saves')renderJournal();window.scrollTo({top:0,behavior:'instant'})}
+function go(page){const meta={home:['Dynasty Dashboard','Your games are save facts. Your decisions develop the story.'],games:['ESPN Game Center','Review the scoreboard without inventing missing scoring plays.'],media:['ESPN Central','Full-season fictional sports-media coverage based on verified game results.'],world:['Around College Football','The rest of the nation, grounded in what the save reveals.'],roster:['Louisville Roster','65 decoded player records from your actual autosave.'],stories:['Storyline Tracker','Player rivalries, coaching history and ongoing dramatic arcs.'],office:["Coach's Office",'One meaningful decision each day. No automatic game progression.'],locker:['Locker Room','Build relationships through one-on-one conversations.'],press:['Press Room','Three postgame questions, one at a time.'],drama:['Rivalries & Drama','Shape the story without rewriting save-verified events.'],saves:['Sync Updates','Apply new save data without replacing this app; keep your story choices.']};currentPage=page;document.querySelectorAll('.page').forEach(n=>n.classList.toggle('active',n.id===page));document.querySelectorAll('[data-go]').forEach(n=>n.classList.toggle('active',n.dataset.go===page));$('pageTitle').textContent=meta[page][0];$('pageSub').textContent=meta[page][1];if(page==='office')renderOffice();if(page==='locker')renderLocker();if(page==='press')renderPress();if(page==='drama')renderDrama();if(page==='saves')renderJournal();window.scrollTo({top:0,behavior:'instant'})}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){go(b.dataset.go)}});
 // All three national Top 25 lists and the save's Heisman candidate table.
 function renderWorld(){
@@ -181,7 +205,21 @@ let gameNotes={
 function score(g){return g.status==='final'?`${g.result} ${g.scored}–${g.allowed}`:'UPCOMING'}
 function gameRow(g){return `<button class="game" data-game="${g.week}"><span class="tiny muted">WK ${g.week}</span><span class="team">${esc(g.opponent)}</span><span class="score ${g.result==='W'?'won':g.result==='L'?'lost':'upcoming'}">${score(g)}</span></button>`}
 function renderGames(){ $('allGames').innerHTML=DATA.games.map(gameRow).join('');$('recentGames').innerHTML=DATA.games.filter(g=>g.status==='final').slice(-4).reverse().map(gameRow).join('');showGame(selectedGame)}
-function showGame(w){const g=DATA.games.find(x=>x.week==w);if(!g)return;selectedGame=w;let notes=gameNotes[w]||['Result recorded.','Further scoring details need validation.'];$('gameDetail').innerHTML=`<div class="panel"><div class="caps">WEEK ${g.week} • ${g.status==='final'?'FINAL':'UPCOMING'}</div><h3>Louisville vs ${esc(g.opponent)}</h3><div class="metric"><span class="value ${g.result==='W'?'won':g.result==='L'?'lost':'upcoming'}">${score(g)}</span></div><div class="divider"></div><div class="caps">What we know</div><p>${esc(notes[0])}</p><div class="caps">What needs evidence</div><p class="muted">${esc(notes[1])}</p>${g.status==='final'?'<div class="callout">Review the verified scoring details above. Any missing play-by-play information may require additional screenshots or save decoding.</div>':'<div class="callout warning">This game has not been played in the save. The app will not simulate it.</div>'}</div>`}
+
+function showGame(w){
+ const g=DATA.games.find(x=>x.week==w);if(!g)return;selectedGame=w;
+ const m=coverageForGame(g),notes=gameNotes[w]||['Result recorded.','Further scoring details need validation.'];
+ const stat=g.status==='final'?'Louisville '+g.scored+', '+g.opponent+' '+g.allowed+'. Margin: '+m.margin+' points. Combined scoring: '+(g.scored+g.allowed)+' points.':'No completed game result.';
+ $('gameDetail').innerHTML='<div class="panel media-analysis"><div class="media-kicker">SPORTSCENTER • WEEK '+g.week+'</div><h3>'+esc(m.headline)+'</h3><div class="metric"><span class="value '+(g.result==='W'?'won':g.result==='L'?'lost':'upcoming')+'">'+score(g)+'</span></div>'+
+ '<h4>Game recap</h4><p>'+esc(m.recap)+'</p>'+
+ '<h4>Inside the numbers</h4><p>'+esc(stat)+'</p>'+
+ '<h4>Verified details and established game reports</h4><p>'+esc(m.evidence)+'</p>'+
+ '<h4>Analyst discussion</h4><div class="media-quote"><b>Analyst A:</b> '+esc(m.recap)+'<p><b>Analyst B:</b> '+esc(m.view)+'</p></div>'+
+ '<h4>Additional save notes</h4><p>'+esc(notes[0])+'</p>'+
+ '<h4>Still being decoded</h4><p>'+esc(notes[1])+'</p>'+
+ '<p class="muted" style="font-size:12px">This is fictional sports-media coverage built around dynasty game data. No unverified winning drive, touchdown or overtime play is presented as fact.</p></div>';
+}
+
 document.addEventListener('click',e=>{const g=e.target.closest('[data-game]');if(g){if(currentPage!=='games')go('games');showGame(+g.dataset.game)}});
 // Roster.
 function updatePositionFilter(){const selected=$('filterPos').value;const positions=[...new Set(DATA.players.map(p=>p.pos))].sort();$('filterPos').innerHTML='<option value="">All positions</option>'+positions.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(''); if(positions.includes(selected))$('filterPos').value=selected;}updatePositionFilter();
@@ -385,7 +423,45 @@ async function checkRemote(){try{const u=$('updateUrl').value.trim();if(!/^https
 $('syncFromUrl').onclick=checkRemote;
 bootUpdateSnapshot();
 
-function renderAll(){renderGames();renderWorld();renderRoster();renderStories();renderOffice();renderLocker();renderPress();renderDrama();renderJournal();renderHomeMetrics();}
+
+const MEDIA_BACKSTORY={
+"West Virginia":["Howard takes down his mentor in Morgantown","Louisville's new head coach returned to West Virginia and beat Rich Rodriguez 31–24 in the official replayed result.","Our established gameplay recap included Braxton Jennings' 96-yard kick-return touchdown and two Louisville interceptions.","An emotional win matters to a program; one seven-point game cannot answer every question."],
+"Kansas State":["Louisville proves it can win away from home","The Cardinals won 28–13 at Kansas State and improved to 2–0.","Established gameplay credited Nate Sheppard with 104 rushing yards and two rushing touchdowns, and Dante Moore with two passing touchdowns.","A strong road result is meaningful, though Moore's interception still offers something to correct."],
+"Virginia":["Four defensive touchdowns bury Virginia","Louisville overwhelmed Virginia 59–21 in Howard's personal rematch.","Established game details: Phares recovered a forced fumble for a touchdown; Landry had two pick-sixes; Scott had another. Virginia still gained 386 offensive yards.","Takeaways changed everything, but 386 yards allowed should be studied."],
+"Clemson":["A 14–7 survival test in Death Valley","After the Virginia scoring spree, Louisville won a low-scoring road test at Clemson.","The final is confirmed. The scoring sequence, winning drive and exact decisive stop are not decoded.","This is proof Louisville can win in different ways, but 14 points may not always be enough."],
+"Georgia Tech":["Louisville handles Georgia Tech by two touchdowns","A 31–17 victory kept the Cardinals' strong start moving.","The 14-point margin is verified. Individual scoring plays have not been established.","The offense rebounded from Clemson's 14-point outing."],
+"Florida State":["42 points carry Louisville past Florida State","Louisville won 42–28 against Florida State, extending its high-scoring stretch.","The final score is verified; the exact touchdown order is unknown.","The offense looked productive by the scoreboard, though 28 points allowed raises questions."],
+"Syracuse":["Another 42-point afternoon for Howard's offense","Louisville beat Syracuse 42–17, scoring 42 for the second consecutive game.","The 25-point winning margin is verified; named scoring plays are not.","Louisville's scoring ceiling deserves attention, but the postseason tests may be harder."],
+"North Carolina":["The unbeaten streak ends in Chapel Hill","North Carolina beat Louisville 35–28, giving Howard his first loss as Cardinals head coach.","Seven-point defeat is confirmed. The turning point and late possessions have not been decoded.","Can Howard learn from a loss without overreacting to it?"],
+"Stanford":["48–45: Louisville wins a shootout","The Cardinals answered the North Carolina loss by winning 48–45 against Stanford.","This is a verified three-point victory. Overtime status and the last score are unknown.","Forty-eight points are encouraging; forty-five surrendered are alarming."],
+"California":["Louisville steadies itself against California","The Cardinals beat California 35–21 and continued rebuilding momentum.","The 14-point margin is verified; player statistics for the game are not fully decoded.","More reassuring than Stanford's 48–45 finish, but the details remain important."],
+"Boston College":["Louisville escapes Boston College 31–29","Boston College pushed the Cardinals to a two-point decision before Louisville prevailed.","A 31–29 final is verified. No evidence identifies a game-winning field goal or fourth-down stop.","Can Louisville keep surviving close games when the competition intensifies?"],
+"Kentucky":["Howard wins the Kentucky rivalry, 30–27","The Cardinals won the in-state rivalry by three points and closed the regular season 11–1.","The verified Kentucky final is 30–27. Specific scoring plays, overtime status and player leaders remain unverified.","Four straight wins show resilience, but another close game gives critics a talking point."]
+};
+function coverageForGame(g){
+ const a=MEDIA_BACKSTORY[g.opponent];
+ const isFinal=g.status==='final';
+ const scoreText=isFinal?'Louisville '+g.scored+', '+g.opponent+' '+g.allowed:'Not played';
+ const headline=isFinal?(a?a[0]:(g.result==='W'?'Louisville defeats ':'Louisville loses to ')+g.opponent+' '+g.scored+'–'+g.allowed):'Preview: '+g.opponent;
+ const recap=isFinal?(a?a[1]:scoreText+' in Week '+g.week+'.'):'No result has been recorded for this game.';
+ const evidence=isFinal?(a?a[2]:'Save-verified final: '+scoreText+'.'):'The game has not been completed in the saved data.';
+ const view=isFinal?(a?a[3]:'The final margin tells us the result, but not what happened on each drive.'):'We cannot know the outcome before gameplay.';
+ const margin=isFinal?Math.abs(g.scored-g.allowed):null;
+ return {headline,recap,evidence,view,margin};
+}
+function renderMedia(){
+ const complete=DATA.games.filter(g=>g.status==='final');
+ const g=complete[complete.length-1];if(!g)return;
+ const m=coverageForGame(g);
+ $('mediaFeature').innerHTML='<div class="media-feature"><div class="media-kicker">LEAD STORY • WEEK '+g.week+'</div><h2>'+esc(m.headline)+'</h2><p>'+esc(m.recap)+'</p><p><b>On the scoreboard:</b> '+esc(g.scored+'–'+g.allowed)+' • '+esc(m.margin)+'-point margin</p><button class="btn" data-media-game="'+g.week+'">Full Game Center Breakdown</button></div>';
+ $('mediaArchive').innerHTML=complete.slice().reverse().map(x=>{const a=coverageForGame(x);return '<button class="media-tile" data-media-game="'+x.week+'"><div class="media-kicker">WEEK '+x.week+' • '+esc(x.result)+' '+x.scored+'–'+x.allowed+'</div><h4>'+esc(a.headline)+'</h4><p>'+esc(a.recap)+'</p><div class="media-kicker">READ RECAP →</div></button>';}).join('');
+ const h=Array.isArray(NATIONAL.headlines)?NATIONAL.headlines:[];
+ $('mediaNational').innerHTML='<div class="media-story"><strong>Louisville '+DATA.record.w+'–'+DATA.record.l+' • Dynasty Week '+DATA.nextWeek+'</strong><p>Current team record from your imported save. National polls may reflect an earlier saved week until a new ranking update is published.</p></div>'+h.slice(0,8).map(x=>'<div class="media-story"><strong>'+esc(x[0])+'</strong><p>'+esc(x[1])+'</p></div>').join('');
+ $('mediaDebates').innerHTML='<div class="media-story"><strong>Analyst desk: '+esc(m.headline)+'</strong><p><b>Optimist:</b> '+esc(m.recap)+'</p><p><b>Skeptic:</b> '+esc(m.view)+'</p></div><div class="media-story"><strong>Howard as a two-sided play caller</strong><p>Howard calls offense and defense in games, with Anthony Pyke advising on defense. Does that bold structure help in pressure situations or increase the workload?</p></div><div class="media-story"><strong>Fan pulse (fictional)</strong><p>Louisville fans have embraced the 11-win campaign, while narrow finishes against Stanford, Boston College and Kentucky generate fierce debate about postseason readiness.</p></div><div class="media-story"><small class="muted">Fictional ESPN-style editorial commentary; not real quotes from ESPN personalities.</small></div>';
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-media-game]');if(!b)return;go('games');showGame(+b.dataset.mediaGame);});
+
+function renderAll(){renderGames();renderMedia();renderWorld();renderRoster();renderStories();renderOffice();renderLocker();renderPress();renderDrama();renderJournal();renderHomeMetrics();}
 // GitHub Pages edition: same-origin update checks when the app is hosted.
 // Local-file use continues with manual paste/import; no fake background synchronization.
 const hostedUpdateURL=(location.protocol==='https:'||location.protocol==='http:')
