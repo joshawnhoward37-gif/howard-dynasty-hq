@@ -418,7 +418,9 @@ if(syncConfig.auto&&syncConfig.url){checkRemote();}
   const src=new Uint8Array(await file.arrayBuffer());
   if(new TextDecoder().decode(src.slice(0,8))!=='FBCHUNKS')throw Error('Unsupported save header. This decoder supports the FBCHUNKS format.');
   if(src[82]!==0x78)throw Error('Could not find the expected compressed dynasty section.');
-  const inflated=await new Response(new Blob([src.subarray(82)]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer().catch(()=>null);
+  const compressedLength=(src[74]|(src[75]<<8)|(src[76]<<16)|(src[77]<<24))>>>0;
+  if(compressedLength<1000000||82+compressedLength>src.length)throw Error('The compressed section length in the save header is invalid.');
+  const inflated=await new Response(new Blob([src.subarray(82,82+compressedLength)]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer().catch(()=>null);
   if(!inflated)throw Error('Unable to decompress this save. It may use a different format.');
   const bytes=new Uint8Array(inflated);
   if(new TextDecoder().decode(bytes.slice(0,4))!=='FrTk')throw Error('Unexpected internal save structure.');
@@ -426,7 +428,8 @@ if(syncConfig.auto&&syncConfig.url){checkRemote();}
   if(p<0)throw Error('The SeasonGame table was not found.');
   // In this CFB 27 schema, SeasonGame rows have a fixed 100-byte stride.
   // The table has 941 slots; team IDs are 17-bit references in big-endian words.
-  const first=p+4831,stride=100,slots=941,found=[];
+  const first=28050704,stride=100,slots=941,found=[];
+  if(bytes[first]!==0x31||bytes[first+1]!==0x9e||bytes[first+2]!==0||bytes[first+3]!==0x3c)throw Error('Unexpected SeasonGame table layout; import stopped safely.');
   if(first+slots*stride>bytes.length)throw Error('Incomplete SeasonGame table.');
   for(let i=0;i<slots;i++){
    const off=first+i*stride;
