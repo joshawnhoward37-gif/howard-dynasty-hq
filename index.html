@@ -424,6 +424,11 @@ if(syncConfig.auto&&syncConfig.url){checkRemote();}
   if(!inflated)throw Error('Unable to decompress this save. It may use a different format.');
   const bytes=new Uint8Array(inflated);
   if(new TextDecoder().decode(bytes.slice(0,4))!=='FrTk')throw Error('Unexpected internal save structure.');
+  // SeasonInfo stores the currently active dynasty week. Verified against three sequential saves.
+  const seasonInfo=indexBytes(bytes,[83,101,97,115,111,110,73,110,102,111,0],1000000);
+  if(seasonInfo<0||seasonInfo+479>=bytes.length)throw Error('Could not locate the dynasty season-week record.');
+  const seasonWeek=bytes[seasonInfo+479];
+  if(seasonWeek<1||seasonWeek>25)throw Error('Invalid season-week value in the autosave.');
   const p=indexBytes(bytes,[83,101,97,115,111,110,71,97,109,101,0],28000000);
   if(p<0)throw Error('The SeasonGame table was not found.');
   // In this CFB 27 schema, SeasonGame rows have a fixed 100-byte stride.
@@ -453,7 +458,7 @@ if(syncConfig.auto&&syncConfig.url){checkRemote();}
   let matched=0,conflicts=[];
   for(const g of found){const old=prior.get(g.week+'|'+g.opponent);if(old){if(old.scored===g.scored&&old.allowed===g.allowed)matched++;else conflicts.push(g.opponent+' W'+g.week+': '+old.scored+'-'+old.allowed+' → '+g.scored+'-'+g.allowed)}}
   if(matched<8&&conflicts.length===0)throw Error('Save data does not match this Louisville dynasty. No changes applied.');
-  return {file:file.name,found,matched,conflicts};
+  return {file:file.name,found,matched,conflicts,seasonWeek};
  }
  async function pick(file){
   if(!file)return;
@@ -463,12 +468,14 @@ if(syncConfig.auto&&syncConfig.url){checkRemote();}
    pending=result;
    const current=new Set(DATA.games.filter(g=>g.status==='final').map(g=>g.week+'|'+g.opponent+'|'+g.scored+'|'+g.allowed));
    const additions=result.found.filter(g=>!current.has(g.week+'|'+g.opponent+'|'+g.scored+'|'+g.allowed));
-   let description='File: '+result.file+'\nRecognized Louisville finals: '+result.found.length+'\nExisting results verified: '+result.matched;
+   let description='File: '+result.file+'\nDynasty week detected: Week '+result.seasonWeek+' (dashboard: Week '+DATA.nextWeek+')\nRecognized Louisville finals: '+result.found.length+'\nExisting results verified: '+result.matched;
    if(additions.length)description+='\n\nNEW RESULTS:\n'+additions.map(g=>'Week '+g.week+' • '+g.opponent+' • '+g.result+' '+g.scored+'–'+g.allowed).join('\n');
    else description+='\n\nAll recognized final scores already appear in your dashboard.';
+   if(result.seasonWeek>DATA.nextWeek)description+='\n\n✓ WEEK ADVANCED: Your coaching calendar will move from Week '+DATA.nextWeek+' to Week '+result.seasonWeek+'. Previous choices will be archived.';
+   else if(result.seasonWeek<DATA.nextWeek)description+='\n\n⚠ This save is from an earlier week. It will not move the coaching calendar backwards.';
    if(result.conflicts.length)description+='\n\nCHANGED SCORES (review carefully):\n'+result.conflicts.join('\n');
    description+='\n\nNational polls, individual stats and scoring summaries are not included in this quick import.';
-   preview.textContent=description;apply.disabled=additions.length===0;
+   preview.textContent=description;apply.disabled=additions.length===0&&result.seasonWeek<=DATA.nextWeek;
   }catch(e){preview.textContent='Could not import: '+e.message;}
  }
  const open=()=>input.click();
@@ -485,14 +492,17 @@ if(syncConfig.auto&&syncConfig.url){checkRemote();}
   const games=[...map.values()].sort((a,b)=>a.week-b.week);
   const finals=games.filter(g=>g.status==='final');
   const newData={...DATA,games,record:{w:finals.filter(g=>g.result==='W').length,l:finals.filter(g=>g.result==='L').length}};
-  if(games.find(g=>g.status==='final'&&g.week===DATA.nextWeek&&g.opponent===DATA.nextOpponent))newData.nextOpponent='';
+  if(pending.seasonWeek>DATA.nextWeek){
+   newData.nextWeek=pending.seasonWeek;
+   newData.nextOpponent='TBD';
+  } else if(games.find(g=>g.status==='final'&&g.week===DATA.nextWeek&&g.opponent===DATA.nextOpponent))newData.nextOpponent='TBD';
   const update={
    schema:'howard-dynasty-hq-update-v1',
-   updateId:'browser-save-'+pending.found.map(x=>x.week+'-'+x.scored+'-'+x.allowed).join('_'),
-   stage:'postgame',week:DATA.nextWeek,data:newData,
-   headlines:[['Direct save import','Louisville scores were read from an EA autosave in your browser. National rankings remain on their last published snapshot.']]
+   updateId:'browser-save-week'+pending.seasonWeek+'-'+pending.found.map(x=>x.week+'-'+x.scored+'-'+x.allowed).join('_'),
+   stage:pending.seasonWeek>DATA.nextWeek?'week-advance':'postgame',week:newData.nextWeek,data:newData,
+   headlines:[['Dynasty week '+newData.nextWeek+' imported','Louisville is '+newData.record.w+'–'+newData.record.l+'. The app decoded the active dynasty week and Louisville scores directly from your EA autosave. National rankings remain on their last published snapshot.']]
   };
-  try{applyDataPack(update);preview.textContent='✓ Imported! Your Louisville scores and record are updated in this browser. Your decisions are preserved. For deep analysis, upload the same save in ChatGPT.';apply.disabled=true;pending=null;}
+  try{applyDataPack(update);preview.textContent='✓ Updated! Dynasty HQ now shows Week '+DATA.nextWeek+' and Louisville '+DATA.record.w+'–'+DATA.record.l+'. '+(state.week===DATA.nextWeek?'The coaching calendar is in sync. ':'')+'Previous weekly decisions are archived when the week advances. For nationwide analysis, share the save in ChatGPT.';apply.disabled=true;pending=null;}
   catch(e){preview.textContent='Import failed: '+e.message;}
  });
 })();
