@@ -422,7 +422,7 @@ if(syncConfig.auto&&syncConfig.url){checkRemote();}
   if(!inflated)throw Error('Unable to decompress this save. It may use a different format.');
   const bytes=new Uint8Array(inflated);
   if(new TextDecoder().decode(bytes.slice(0,4))!=='FrTk')throw Error('Unexpected internal save structure.');
-  const p=indexBytes(bytes,[83,101,97,115,111,110,71,97,109,101,0],26000000);
+  const p=indexBytes(bytes,[83,101,97,115,111,110,71,97,109,101,0],28000000);
   if(p<0)throw Error('The SeasonGame table was not found.');
   // In this CFB 27 schema, SeasonGame rows have a fixed 100-byte stride.
   // The table has 941 slots; team IDs are 17-bit references in big-endian words.
