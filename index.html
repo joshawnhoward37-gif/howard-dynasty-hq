@@ -36,6 +36,13 @@ main{padding:27px clamp(16px,3vw,42px) 70px;max-width:1530px;width:100%;margin:0
 .sync-panel{background:linear-gradient(160deg,#15253b,#101b2c);border:1px solid #466482;margin-bottom:20px}
 .sync-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:15px;align-items:end;margin:15px 0}.sync-grid label{display:block;font-weight:750;font-size:12px;margin-bottom:8px}.sync-actions{display:flex;flex-direction:column;gap:8px;min-width:190px}.sync-panel textarea{width:100%;min-height:160px;resize:vertical;background:#0a1624;color:#e3f0ff;padding:12px;font:12px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;border:1px solid #51667f;border-radius:11px}.sync-panel input[type=url]{background:#0a1624;border:1px solid #51667f;border-radius:10px;padding:11px;color:#e3f0ff;width:100%}.sync-step{border:1px solid #374a62;border-radius:12px;background:#19283c;padding:15px}.sync-step strong{display:block;margin:13px 0 5px}.sync-step p{margin:0;color:var(--muted);font-size:12px}.sync-status{padding:12px;border-radius:9px;background:#1b3447;color:#d5f0ff;font-size:12px}.sync-check{display:flex!important;align-items:center;gap:8px;margin:12px 0 0!important}.sync-check input{width:18px;height:18px}.sync-grid .btn{display:block;text-align:center}.sync-panel .callout{margin-top:16px}
 @media(max-width:760px){.sync-grid{grid-template-columns:1fr}.sync-actions{width:100%}.sync-panel textarea{min-height:120px}}
+
+.save-drop{margin:18px 0;padding:28px;border:2px dashed #566b83;border-radius:15px;background:#152538;cursor:pointer;text-align:center;transition:border-color .2s,background .2s}
+.save-drop:hover,.save-drop.dragover{border-color:#ef6677;background:#25344b}
+.save-drop strong{display:block;font-size:17px;margin:6px 0}
+.save-drop .tiny{margin-top:7px}
+#savePreview{margin:15px 0;white-space:pre-wrap;font-size:13px;line-height:1.6}
+#saveApply{margin:10px 0}
 </style></head>
 <body><div id="shell"><aside>
 <div class="brand"><div class="crest">L</div><div><h2>DYNASTY HQ <span style="color:var(--red)">4.0</span></h2><div class="caps" style="font-size:9px">Howard Coaching Universe</div></div></div>
@@ -83,7 +90,23 @@ main{padding:27px clamp(16px,3vw,42px) 70px;max-width:1530px;width:100%;margin:0
 <section class="page" id="locker"><div class="panel"><div class="caps">Fictional interactive conversations</div><h3>Locker Room</h3><p class="muted">These conversations develop our coaching narrative, not the game's hidden player morale ratings. One private conversation per person per story week. You can select a reply or type your own words.</p><div class="grid two" id="peopleList"></div><div class="section" id="conversationPane"></div></div></section>
 <section class="page" id="press"><div class="panel"><div class="caps" id="pressGameHeader">Archived Week 12 • Louisville 31, Boston College 29</div><h3>Postgame Press Room</h3><p class="muted" id="pressGameIntro">The 31–29 score is verified. Reporter dialogue and your answers are fictional; no scoring sequence is assumed. Three questions, asked one at a time. Choose an option, type your own answer, or combine both.</p><div id="pressContent"></div></div></section>
 <section class="page" id="drama"><div class="panel"><div class="caps">Interactive story arcs</div><h3>Rivalries &amp; Coaching Controversies</h3><p class="muted">Handle emerging conflicts and media narratives. The issues below are <b>fictional story prompts</b>, not disputes or reports verified in the save. Select an approach and/or type your own response.</p><div class="grid two" id="dramaCards"></div><div id="dramaPane"></div></div></section>
-<section class="page" id="saves"><div class="panel"><div class="panel sync-panel" id="syncCenter"><div class="caps">KEEP YOUR APP • TWO-STAGE SAVE UPDATES</div>
+<section class="page" id="saves">
+<div class="panel section" id="localSaveImport">
+ <div class="caps">NEW • DIRECT AUTOSAVE DROP</div>
+ <h3>Drop your EA College Football 27 save here</h3>
+ <p class="muted">The app decodes your Louisville schedule, opponents, final scores, and win/loss record directly in this browser. Your save stays on your device. Confirm the preview before applying. Detailed scoring plays, player stats and nationwide rankings are <b>not yet supported</b> by the browser decoder; share the autosave in ChatGPT for those updates.</p>
+ <div id="saveDropZone" class="save-drop" role="button" tabindex="0" aria-label="Drop or choose an EA Dynasty autosave">
+  <span style="font-size:27px">🏈 ⇧</span>
+  <strong>Drag and drop an AUTOSAVE file</strong>
+  <span class="muted">or click to choose a file</span>
+  <div class="tiny muted">Supports the FBCHUNKS / FrTk format used by your uploaded College Football 27 saves. Nothing is sent to a server.</div>
+ </div>
+ <input id="localSaveFile" type="file" accept=".gz,.bin,.sav,.frtk,.dat,application/octet-stream" style="display:none"/>
+ <div id="savePreview" class="sync-status" aria-live="polite">No autosave selected yet.</div>
+ <button class="btn" id="saveApply" disabled>Apply verified Louisville results</button>
+ <div class="callout">After importing, your current coaching decisions stay saved locally. The app does not advance your story week automatically. National updates and deeper scoring analysis still come through the published update feed.</div>
+</div>
+<div class="panel"><div class="panel sync-panel" id="syncCenter"><div class="caps">KEEP YOUR APP • TWO-STAGE SAVE UPDATES</div>
 <h3>Update Dynasty HQ without downloading another app</h3>
 <p class="muted">After a game, upload the EA autosave in ChatGPT. I decode Louisville’s game, scoring summary, and player stats. After advancing the week, upload again for the nationwide results, Top 25, Heisman and playoff changes. I’ll provide a <b>Dynasty Update Pack</b> for this app. You can paste its JSON or import the small data file below.</p>
 <div class="grid two" style="margin:15px 0">
@@ -375,6 +398,101 @@ $('autoSyncEnabled').checked=!!syncConfig.auto;
 renderAll();persist();
 if(syncConfig.auto&&syncConfig.url){checkRemote();}
 
+
+
+/* EA FBCHUNKS browser-side preview. Read-only file parsing; no uploads. */
+(()=>{
+ const dz=document.getElementById('saveDropZone');
+ const input=document.getElementById('localSaveFile');
+ const preview=document.getElementById('savePreview');
+ const apply=document.getElementById('saveApply');
+ if(!dz||!input||!preview||!apply)return;
+ let pending=null;
+ const opps={138:'West Virginia',53:'Kansas State',133:'Virginia',21:'Clemson',43:'Georgia Tech',38:'Florida State',108:'Syracuse',80:'North Carolina',107:'Stanford',17:'California',13:'Boston College',56:'Kentucky'};
+ const u32=(b,n)=>((b[n]*16777216)+(b[n+1]<<16)+(b[n+2]<<8)+b[n+3])>>>0;
+ const bit=(b,bitOff,width)=>{let v=0;for(let i=0;i<width;i++){const p=bitOff+i;v=v*2+((b[p>>3]>>(7-(p&7)))&1);}return v};
+ const indexBytes=(bytes,needle,start=0)=>{outer:for(let i=start;i<=bytes.length-needle.length;i++){for(let j=0;j<needle.length;j++)if(bytes[i+j]!==needle[j])continue outer;return i;}return -1};
+ async function decodeSave(file){
+  if(file.size<500000||file.size>70e6)throw Error('This does not look like a supported CFB dynasty autosave.');
+  if(typeof DecompressionStream==='undefined')throw Error('This browser does not support zlib decompression. Try an up-to-date Chrome or Edge.');
+  const src=new Uint8Array(await file.arrayBuffer());
+  if(new TextDecoder().decode(src.slice(0,8))!=='FBCHUNKS')throw Error('Unsupported save header. This decoder supports the FBCHUNKS format.');
+  if(src[82]!==0x78)throw Error('Could not find the expected compressed dynasty section.');
+  const inflated=await new Response(new Blob([src.subarray(82)]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer().catch(()=>null);
+  if(!inflated)throw Error('Unable to decompress this save. It may use a different format.');
+  const bytes=new Uint8Array(inflated);
+  if(new TextDecoder().decode(bytes.slice(0,4))!=='FrTk')throw Error('Unexpected internal save structure.');
+  const p=indexBytes(bytes,[83,101,97,115,111,110,71,97,109,101,0],26000000);
+  if(p<0)throw Error('The SeasonGame table was not found.');
+  // In this CFB 27 schema, SeasonGame rows have a fixed 100-byte stride.
+  // The table has 941 slots; team IDs are 17-bit references in big-endian words.
+  const first=p+4831,stride=100,slots=941,found=[];
+  if(first+slots*stride>bytes.length)throw Error('Incomplete SeasonGame table.');
+  for(let i=0;i<slots;i++){
+   const off=first+i*stride;
+   const home=u32(bytes,off)&0x1ffff;
+   const away=u32(bytes,off+28)&0x1ffff;
+   if(home!==60&&away!==60)continue;
+   const id=home===60?away:home;
+   const name=opps[id];
+   const homeScore=bit(bytes.subarray(off,off+stride),552,8);
+   const awayScore=bit(bytes.subarray(off,off+stride),544,8);
+   const week=bit(bytes.subarray(off,off+stride),693,6);
+   const lvScore=home===60?homeScore:awayScore;
+   const theirScore=home===60?awayScore:homeScore;
+   if(!name||week<1||week>25||lvScore>95||theirScore>95)continue;
+   if(lvScore===0&&theirScore===0)continue;
+   found.push({week,opponent:name,scored:lvScore,allowed:theirScore,result:lvScore>theirScore?'W':lvScore<theirScore?'L':'T',status:'final'});
+  }
+  if(found.length<8)throw Error('Only '+found.length+' recognizable Louisville games found. Refusing to change the dashboard.');
+  found.sort((a,b)=>a.week-b.week);
+  const prior=new Map(DATA.games.filter(g=>g.status==='final').map(g=>[g.week+'|'+g.opponent,g]));
+  let matched=0,conflicts=[];
+  for(const g of found){const old=prior.get(g.week+'|'+g.opponent);if(old){if(old.scored===g.scored&&old.allowed===g.allowed)matched++;else conflicts.push(g.opponent+' W'+g.week+': '+old.scored+'-'+old.allowed+' → '+g.scored+'-'+g.allowed)}}
+  if(matched<8&&conflicts.length===0)throw Error('Save data does not match this Louisville dynasty. No changes applied.');
+  return {file:file.name,found,matched,conflicts};
+ }
+ async function pick(file){
+  if(!file)return;
+  pending=null;apply.disabled=true;preview.textContent='Decoding '+file.name+' locally…';
+  try{
+   const result=await decodeSave(file);
+   pending=result;
+   const current=new Set(DATA.games.filter(g=>g.status==='final').map(g=>g.week+'|'+g.opponent+'|'+g.scored+'|'+g.allowed));
+   const additions=result.found.filter(g=>!current.has(g.week+'|'+g.opponent+'|'+g.scored+'|'+g.allowed));
+   let description='File: '+result.file+'\nRecognized Louisville finals: '+result.found.length+'\nExisting results verified: '+result.matched;
+   if(additions.length)description+='\n\nNEW RESULTS:\n'+additions.map(g=>'Week '+g.week+' • '+g.opponent+' • '+g.result+' '+g.scored+'–'+g.allowed).join('\n');
+   else description+='\n\nAll recognized final scores already appear in your dashboard.';
+   if(result.conflicts.length)description+='\n\nCHANGED SCORES (review carefully):\n'+result.conflicts.join('\n');
+   description+='\n\nNational polls, individual stats and scoring summaries are not included in this quick import.';
+   preview.textContent=description;apply.disabled=additions.length===0;
+  }catch(e){preview.textContent='Could not import: '+e.message;}
+ }
+ const open=()=>input.click();
+ dz.addEventListener('click',open);
+ dz.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+ dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover')});
+ dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+ dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');pick(e.dataTransfer.files[0]);});
+ input.addEventListener('change',()=>{pick(input.files[0]);input.value='';});
+ apply.addEventListener('click',()=>{
+  if(!pending)return;
+  const map=new Map(DATA.games.map(g=>[g.week+'|'+g.opponent,{...g}]));
+  for(const g of pending.found) map.set(g.week+'|'+g.opponent,g);
+  const games=[...map.values()].sort((a,b)=>a.week-b.week);
+  const finals=games.filter(g=>g.status==='final');
+  const newData={...DATA,games,record:{w:finals.filter(g=>g.result==='W').length,l:finals.filter(g=>g.result==='L').length}};
+  if(games.find(g=>g.status==='final'&&g.week===DATA.nextWeek&&g.opponent===DATA.nextOpponent))newData.nextOpponent='';
+  const update={
+   schema:'howard-dynasty-hq-update-v1',
+   updateId:'browser-save-'+pending.found.map(x=>x.week+'-'+x.scored+'-'+x.allowed).join('_'),
+   stage:'postgame',week:DATA.nextWeek,data:newData,
+   headlines:[['Direct save import','Louisville scores were read from an EA autosave in your browser. National rankings remain on their last published snapshot.']]
+  };
+  try{applyDataPack(update);preview.textContent='✓ Imported! Your Louisville scores and record are updated in this browser. Your decisions are preserved. For deep analysis, upload the same save in ChatGPT.';apply.disabled=true;pending=null;}
+  catch(e){preview.textContent='Import failed: '+e.message;}
+ });
+})();
 
 </script>
 </body></html>
